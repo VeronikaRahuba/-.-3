@@ -9,6 +9,11 @@ import java.util.Collections;
 import java.util.Random;
 
 public class lab3 {
+
+    private final static double GTR=0.7679;
+    private final static double FTR = 4.1;
+    private final static double TTR = 2.306;
+
     public static void main(String[] args) {
         int X1min = 15;
         int X1max = 45;
@@ -115,18 +120,10 @@ public class lab3 {
 
         
         //Критерій Кохрена
-        double sigmaY1=((y1[0]-Y1sr)*(y1[0]-Y1sr)+
-                        (y2[0]-Y1sr)*(y2[0]-Y1sr)
-                        +(y3[0]-Y1sr)*(y3[0]-Y1sr))/3;
-        double sigmaY2=((y1[1]-Y2sr)*(y1[1]-Y2sr)+
-                        (y2[1]-Y2sr)*(y2[1]-Y2sr)
-                        +(y3[1]-Y2sr)*(y3[1]-Y2sr))/3;
-        double sigmaY3=((y1[2]-Y3sr)*(y1[2]-Y3sr)+
-                        (y2[2]-Y3sr)*(y2[2]-Y3sr)
-                        +(y3[2]-Y3sr)*(y3[2]-Y3sr))/3;
-        double sigmaY4=((y1[3]-Y4sr)*(y1[3]-Y4sr)+
-                        (y2[3]-Y4sr)*(y2[3]-Y4sr)
-                        +(y3[3]-Y4sr)*(y3[3]-Y4sr))/3;
+        double sigmaY1=getDesp(y1,y2,y3,Y1sr,0);
+        double sigmaY2=getDesp(y1,y2,y3,Y2sr,1);
+        double sigmaY3=getDesp(y1,y2,y3,Y3sr,2);
+        double sigmaY4=getDesp(y1,y2,y3,Y4sr,3);
         double sigma =(sigmaY1+sigmaY2+sigmaY3+sigmaY4);
 
         ArrayList<Double> col = new ArrayList<Double>();
@@ -140,12 +137,12 @@ public class lab3 {
         int f1 = m-1;
         int f2 = N;
         //q =0.05;
-        double Gtr=0.7679;
-        if(Gkr<Gtr){
+
+        if(cohr(Gkr)){
             System.out.println("Дисперсія однорідна за критерієм Кохрена");
         }
         else {
-            System.out.println("Дисперсія неоднорідна за критерієм Кохрена");
+            System.out.println("Дисперсія неоднорідна за  Кохрена");
         }
 
 
@@ -165,17 +162,17 @@ public class lab3 {
         double t3=Math.abs(B3)/sigmaB;
 
         int f3=f1*f2;
-        double ttr = 2.306;
+
         double b00=0,b11=0,b22=0,b33=0;
 
         int d=0;
-        if (t0<ttr){ System.out.println("    Коефіцент В0 не значимий за критерій Стьюдента"); }
+        if (t0<TTR){ System.out.println("    Коефіцент В0 не значимий за критерієм Стьюдента"); }
             else {b00 = t0;d++;}
-        if (t1<ttr){   System.out.println("    Коефіцент В1 не значимий за критерій Стьюдента");}
+        if (t1<TTR){   System.out.println("    Коефіцент В1 не значимий за критерієм Стьюдента");}
             else {b11 = t1;d++;}
-        if (t2<ttr){   System.out.println("    Коефіцент В2 не значимий за критерій Стьюдента"); }
+        if (t2<TTR){   System.out.println("    Коефіцент В2 не значимий за критерієм Стьюдента"); }
             else {b22 = t2;d++;}
-        if (t3<ttr){   System.out.println("    Коефіцент В3 не значимий за критерій Стьюдента");}
+        if (t3<TTR){   System.out.println("    Коефіцент В3 не значимий за критерієм Стьюдента");}
             else {b33 = t3;d++;}
 
         double y121 = b00+b11*x1[0]+b22*x2[0]+b33*x3[0];
@@ -190,11 +187,27 @@ public class lab3 {
                             +(y123-Y3sr)*(y123-Y3sr)
                             +(y124-Y4sr)*(y124-Y4sr))/(m/f4);
             double Fkr = sigmaAd/sigmaBB;
-            double Ftr = 4.1;
-            if (Fkr>Ftr){ System.out.println("Рівняння неадекватно оригіналу"); }
+
+            if (fisher(Fkr)){ System.out.println("Рівняння неадекватно оригіналу"); }
             else { System.out.println("Рівняння адекватно оригіналу"); }
 
-        }
+    }
+
+    private static boolean cohr(double a){
+        return a < GTR;
+    }
+
+    private static boolean fisher(double a){
+        return a > FTR;
+    }
+    private static double getDesp(int []a,int []b,int []c,double y,int i){
+        return ((a[i]-y)*(a[i]-y)+
+                (b[i]-y)*(b[i]-y)
+                +(c[i]-y)*(c[i]-y))/3;
+    }
+    
+    
+
 
 }
 
